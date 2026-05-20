@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import { createServer } from 'node:http';
 import { config } from './config';
 import routes from './routes';
+import { Server } from 'socket.io';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -16,6 +18,14 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+const server = createServer(app);
+const io = new Server(server);
+io.on('connection', (socket) => {
+    console.log('a user connected');
+});
+
+
+
 
 // API routes
 app.use('/api', routes);
@@ -25,7 +35,7 @@ app.use(errorHandler);
 
 const startServer = async (): Promise<void> => {
     try {
-        app.listen(config.port, '0.0.0.0', () => {
+        server.listen(config.port, '0.0.0.0', () => {
             console.log(`Main Server running on port ${config.port}`);
             console.log(`Environment: ${config.nodeEnv}`);
             console.log(`Health check: http://localhost:${config.port}/api/health`);
