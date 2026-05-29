@@ -57,5 +57,6 @@ export const writeFileService = async (projectId: string, relativePath: string, 
 
 export const readFileService = async (projectId: string, relativePath: string): Promise<string> => {
     const fullPath = validatePath(projectId, relativePath);
-    return await fs.readFile(fullPath, 'utf8');
+    const response = (await fs.readFile(fullPath, "utf-8"));
+    return response;
 }

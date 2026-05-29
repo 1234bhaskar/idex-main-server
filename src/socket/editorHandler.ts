@@ -43,7 +43,8 @@ export const handleEditorSocketEvents = (io: Server, socket: Socket) => {
     socket.on(SOCKET_EVENTS.FILE_READ, async (payload: FileOperationPayload, callback: (res: SocketResponse<string>) => void) => {
         try {
             const content = await projectService.readFileService(payload.projectId, payload.path);
-            callback({ success: true, data: content });
+            // callback({ success: true, data: content });
+            socket.emit("readFileSuccess", { path: payload.path, data: content });
         } catch (error: any) {
             callback({ success: false, error: error.message });
         }

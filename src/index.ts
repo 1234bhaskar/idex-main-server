@@ -8,6 +8,9 @@ import { Server } from 'socket.io';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { handleEditorSocketEvents } from './socket/editorHandler';
 import chokidar from 'chokidar';
+
+
+
 const app = express();
 
 app.use(helmet());
@@ -46,7 +49,9 @@ const editorNamespace = io.of('/editor');
 editorNamespace.on('connection', (socket) => {
     console.log("editor connected");
 
-    let projectID: string | null = "123";
+    const projectID = socket.handshake.query['projectId'] as string;
+    console.log("project id received after connection", projectID);
+
 
     if (projectID) {
         //watch
