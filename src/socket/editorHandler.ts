@@ -31,12 +31,22 @@ export const handleEditorSocketEvents = (io: Server, socket: Socket) => {
         }
     });
 
-    socket.on(SOCKET_EVENTS.FILE_WRITE, async (payload: FileOperationPayload, callback: (res: SocketResponse) => void) => {
+    socket.on(SOCKET_EVENTS.FILE_WRITE, async (payload: FileOperationPayload, callback?: (res: SocketResponse) => void) => {
         try {
-            await projectService.writeFileService(payload.projectId, payload.path, payload.content || '');
-            callback({ success: true });
+            if (!payload.path) {
+                throw new Error('File path is required');
+            }
+            if (payload.content === undefined || payload.content === null) {
+                throw new Error('File content is required');
+            }
+            await projectService.writeFileService(payload.path, payload.content);
+
+            // socket.emit("writeFileSuccess", { path: payload.path, data: payload.content });
         } catch (error: any) {
-            callback({ success: false, error: error.message });
+            console.log(error);
+            if (typeof callback === 'function') {
+                callback({ success: false, error: error.message });
+            }
         }
     });
 

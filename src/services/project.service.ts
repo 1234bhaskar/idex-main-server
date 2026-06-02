@@ -50,10 +50,14 @@ export const deleteFileOrFolderService = async (projectId: string, relativePath:
     await fs.rm(fullPath, { recursive: true, force: true });
 }
 
-export const writeFileService = async (projectId: string, relativePath: string, content: string): Promise<void> => {
-    const fullPath = validatePath(projectId, relativePath);
-    await fs.writeFile(fullPath, content);
+export const writeFileService = async (relativePath: string, content: string): Promise<void> => {
+    if (content === undefined || content === null) {
+        throw new Error('File content is required');
+    }
+
+    await fs.writeFile(relativePath, content, 'utf-8');
 }
+
 
 export const readFileService = async (projectId: string, relativePath: string): Promise<string> => {
     const fullPath = validatePath(projectId, relativePath);
