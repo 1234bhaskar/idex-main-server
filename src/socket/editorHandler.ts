@@ -2,7 +2,7 @@ import { Server, Socket } from 'socket.io';
 import * as projectService from '../services/project.service';
 import { FileOperationPayload, SOCKET_EVENTS, SocketResponse } from '../types/socket';
 
-export const handleEditorSocketEvents = (io: Server, socket: Socket) => {
+export const handleEditorSocketEvents = (io: Server, socket: Socket, editorNamespace: any) => {
 
     socket.on(SOCKET_EVENTS.FILE_CREATE, async (payload: FileOperationPayload, callback: (res: SocketResponse) => void) => {
         try {
@@ -39,9 +39,9 @@ export const handleEditorSocketEvents = (io: Server, socket: Socket) => {
             if (payload.content === undefined || payload.content === null) {
                 throw new Error('File content is required');
             }
-            await projectService.writeFileService(payload.path, payload.content);
+            const response = await projectService.writeFileService(payload.path, payload.content);
 
-            // socket.emit("writeFileSuccess", { path: payload.path, data: payload.content });
+            editorNamespace.emit("writeFileSuccess", { data: "File Written Successfully", path: payload.path });
         } catch (error: any) {
             console.log(error);
             if (typeof callback === 'function') {
@@ -52,11 +52,12 @@ export const handleEditorSocketEvents = (io: Server, socket: Socket) => {
 
     socket.on(SOCKET_EVENTS.FILE_READ, async (payload: FileOperationPayload, callback: (res: SocketResponse<string>) => void) => {
         try {
-            const content = await projectService.readFileService(payload.projectId, payload.path);
+            const content = await projectService.readFileService(payload.path);
             // callback({ success: true, data: content });
             socket.emit("readFileSuccess", { path: payload.path, data: content });
         } catch (error: any) {
-            callback({ success: false, error: error.message });
+            // callback({ success: false, error: error.message });
+            console.log(error);
         }
     });
 };

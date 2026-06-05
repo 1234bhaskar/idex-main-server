@@ -1,5 +1,5 @@
 export interface FileOperationPayload {
-    projectId: string;
+    projectId?: string;
     path: string;
     content?: string;
 }

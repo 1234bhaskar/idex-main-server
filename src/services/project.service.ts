@@ -55,12 +55,13 @@ export const writeFileService = async (relativePath: string, content: string): P
         throw new Error('File content is required');
     }
 
-    await fs.writeFile(relativePath, content, 'utf-8');
+    const response = await fs.writeFile(relativePath, content, 'utf-8');
+    return response;
 }
 
 
-export const readFileService = async (projectId: string, relativePath: string): Promise<string> => {
-    const fullPath = validatePath(projectId, relativePath);
-    const response = (await fs.readFile(fullPath, "utf-8"));
+export const readFileService = async (relativePath: string): Promise<string> => {
+    // const fullPath = validatePath(projectId, relativePath);
+    const response = (await fs.readFile(relativePath, "utf-8"));
     return response;
 }

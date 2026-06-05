@@ -32,7 +32,7 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log('a user connected', socket.id);
-    handleEditorSocketEvents(io, socket);
+    handleEditorSocketEvents(io, socket, editorNamespace);
 
     socket.on('disconnect', () => {
         console.log('user disconnected', socket.id);
@@ -73,7 +73,7 @@ editorNamespace.on('connection', (socket) => {
     }
 
 
-    handleEditorSocketEvents(io, socket);
+    handleEditorSocketEvents(io, socket, editorNamespace);
 
 
     socket.on('disconnect', async () => {
