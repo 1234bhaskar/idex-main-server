@@ -46,8 +46,10 @@ export const createFolderService = async (projectId: string, relativePath: strin
 }
 
 export const deleteFileOrFolderService = async (projectId: string, relativePath: string): Promise<void> => {
-    const fullPath = validatePath(projectId, relativePath);
-    await fs.rm(fullPath, { recursive: true, force: true });
+    // const fullPath = validatePath(projectId, relativePath);
+
+    //recursive delete to handle both files and folders
+    await fs.rm(relativePath, { recursive: true, force: true });
 }
 
 export const writeFileService = async (relativePath: string, content: string): Promise<void> => {

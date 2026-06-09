@@ -25,9 +25,12 @@ export const handleEditorSocketEvents = (io: Server, socket: Socket, editorNames
     socket.on(SOCKET_EVENTS.FILE_DELETE, async (payload: FileOperationPayload, callback: (res: SocketResponse) => void) => {
         try {
             await projectService.deleteFileOrFolderService(payload.projectId, payload.path);
-            callback({ success: true });
+            editorNamespace.emit("deleteFileSuccess", { data: "File Deleted Successfully", path: payload.path });
+            console.log(`Emitted deleteFileOrFolderSuccess for path: ${payload.path}`);
         } catch (error: any) {
-            callback({ success: false, error: error.message });
+            console.log(error);
+
+            ;
         }
     });
 
