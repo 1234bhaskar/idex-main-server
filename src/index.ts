@@ -81,6 +81,23 @@ editorNamespace.on('connection', (socket) => {
         console.log("editor disconnected");
     });
 });
+
+
+const terminalNamespace = io.of('/terminal');
+terminalNamespace.on('connection', (socket) => {
+    console.log("terminal connected");
+
+    socket.on('shell-input', (data) => {
+        console.log("shell input received", data);
+        terminalNamespace.emit('shell-output', data);
+    });
+
+    socket.on('disconnect', () => {
+        console.log("terminal disconnected");
+    });
+});
+
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 
